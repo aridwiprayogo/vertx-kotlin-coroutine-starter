@@ -1,0 +1,222 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Simple Inventory API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /inventory/{id}:
+    get:
+      summary: searches inventory
+      operationId: InventoryController.get
+      description: Get an inventory item by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '400':
+          description: bad input parameter
+    delete:
+      summary: delete inventory item
+      operationId: InventoryController.delete
+      description: Delete an inventory item by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+    patch:
+      summary: adds an inventory item
+      operationId: InventoryController.patch
+      description: Update inventory item
+      responses:
+        '200':
+          description: item updated
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: updates to inventory item
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Widget Adapter
+                releaseDate:
+                  type: string
+                  example: '2016-08-29'
+                manufacturer:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: ACME Corporation
+                    homePage:
+                      type: string
+                      format: url
+                      example: 'https://www.acme-corp.com'
+                    phone:
+                      type: string
+                      example: 408-867-5309
+                  required:
+                    - name
+                count:
+                  type: integer
+                  minimum: 0
+                  maximum: 50
+                  example: 1
+  /inventory:
+    get:
+      tags:
+        - developers
+      summary: searches inventory
+      operationId: InventoryController.getAll
+      description: Search for all inventory items
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+        '400':
+          description: bad input parameter
+    post:
+      summary: adds an inventory item
+      operationId: InventoryController.post
+      description: Adds an item to the system
+      responses:
+        '200':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Widget Adapter
+                releaseDate:
+                  type: string
+                  example: '2016-08-29'
+                manufacturer:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: ACME Corporation
+                    homePage:
+                      type: string
+                      format: url
+                      example: 'https://www.acme-corp.com'
+                    phone:
+                      type: string
+                      example: 408-867-5309
+                  required:
+                    - name
+                count:
+                  type: integer
+                  minimum: 0
+                  maximum: 50
+                  example: 1
+              required:
+                - name
+                - manufacturer
+                - releaseDate
+components:
+  schemas:
+    InventoryItem:
+      type: object
+      required:
+        - id
+        - name
+        - manufacturer
+        - releaseDate
+        - count
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Widget Adapter
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+        count:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 1
+    Manufacturer:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object
+    LoginCredentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: bob
+        password:
+          type: string
+          example: secret
